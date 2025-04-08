@@ -51,6 +51,9 @@ public class AuthController {
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String redirectUri;
 
+    @Value("${frontend.redirect-url}")
+    private String frontendRedirectUrl;
+
     @GetMapping("/google-callback")
     @Operation(summary = "Xử lý callback từ Google OAuth", description = "Xử lý mã code từ Google để đăng nhập và trả về access token cùng refresh token")
     @ApiResponses(value = {
@@ -71,7 +74,7 @@ public class AuthController {
 
         Map<String, Object> tokenResponse = restTemplate.postForObject(tokenUrl, params, Map.class);
         if (tokenResponse == null || tokenResponse.containsKey("error")) {
-            response.sendRedirect("http://localhost:3000/?error=login_failed");
+            response.sendRedirect(frontendRedirectUrl + "/?error=login_failed");
             return;
         }
 
@@ -80,7 +83,7 @@ public class AuthController {
         try {
             oidcUser = jwtService.parseGoogleIdToken(idToken);
         } catch (IllegalArgumentException e) {
-            response.sendRedirect("http://localhost:3000/?error=invalid_token");
+            response.sendRedirect(frontendRedirectUrl + "/?error=login_failed");
             return;
         }
 
@@ -96,14 +99,14 @@ public class AuthController {
         response.addCookie(refreshCookie);
 
         String redirectUrl = String.format(
-                "http://localhost:3000/callback?access_token=%s&role=%s&name=%s&email=%s&picture=%s&googleId=%s",
+                "%s/callback?access_token=%s&role=%s&name=%s&email=%s&picture=%s&googleId=%s",
+                frontendRedirectUrl,
                 URLEncoder.encode(accessToken, StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getRole().getRoleName(), StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getName() != null ? user.getName() : "", StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getEmail() != null ? user.getEmail() : "", StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getAvatarUrl() != null ? user.getAvatarUrl() : "", StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getGoogleId(), StandardCharsets.UTF_8));
-        response.sendRedirect(redirectUrl);
     }
 
     @PostMapping("/refresh")
