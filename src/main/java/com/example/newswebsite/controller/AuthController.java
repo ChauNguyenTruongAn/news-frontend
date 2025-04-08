@@ -107,6 +107,8 @@ public class AuthController {
                 URLEncoder.encode(user.getEmail() != null ? user.getEmail() : "", StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getAvatarUrl() != null ? user.getAvatarUrl() : "", StandardCharsets.UTF_8),
                 URLEncoder.encode(user.getGoogleId(), StandardCharsets.UTF_8));
+
+        response.sendRedirect(redirectUrl);
     }
 
     @PostMapping("/refresh")
