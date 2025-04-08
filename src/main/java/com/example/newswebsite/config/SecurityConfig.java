@@ -27,7 +27,8 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.cors(cors -> cors.configurationSource(request -> {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:5500"));
+                        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:5500",
+                                        "https://stunews.static.domains"));
                         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                         config.setAllowedHeaders(Arrays.asList("*"));
                         config.setAllowCredentials(true);
