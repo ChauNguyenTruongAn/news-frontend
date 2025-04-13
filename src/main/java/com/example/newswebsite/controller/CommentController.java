@@ -40,7 +40,7 @@ public class CommentController {
         private final JwtService jwtService;
 
         @PostMapping
-        @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'EDITOR')")
         @Operation(summary = "Thêm bình luận", description = "Thêm một bình luận mới cho bài viết, yêu cầu vai trò USER hoặc ADMIN")
         @SecurityRequirement(name = "bearerAuth")
         @ApiResponses(value = {
@@ -74,7 +74,7 @@ public class CommentController {
         }
 
         @DeleteMapping("/{commentId}")
-        @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+        @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'EDITOR')")
         @Operation(summary = "Xóa bình luận", description = "Xóa bình luận với ID được chỉ định, yêu cầu vai trò USER hoặc ADMIN")
         @SecurityRequirement(name = "bearerAuth")
         @ApiResponses(value = {
