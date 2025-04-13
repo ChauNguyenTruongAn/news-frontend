@@ -69,4 +69,28 @@ public interface ArticleRepository extends JpaRepository<Article, Integer>, JpaS
                         @Param("status") ArticleStatus status,
                         @Param("startDate") LocalDateTime startDate,
                         Pageable pageable);
+
+        @Query("SELECT a FROM Article a " +
+                        "WHERE a.status = :status " +
+                        "AND (LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                        "OR LOWER(a.summary) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                        "OR LOWER(a.content) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+                        "ORDER BY a.createdAt DESC")
+        Page<Article> searchArticles(
+                        @Param("keyword") String keyword,
+                        @Param("status") ArticleStatus status,
+                        Pageable pageable);
+
+        @Query("SELECT a FROM Article a " +
+                        "WHERE a.status = :status " +
+                        "AND a.category.categoryId = :categoryId " +
+                        "AND (LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                        "OR LOWER(a.summary) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+                        "OR LOWER(a.content) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+                        "ORDER BY a.createdAt DESC")
+        Page<Article> searchArticlesByCategory(
+                        @Param("keyword") String keyword,
+                        @Param("status") ArticleStatus status,
+                        @Param("categoryId") Integer categoryId,
+                        Pageable pageable);
 }

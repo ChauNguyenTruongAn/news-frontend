@@ -68,7 +68,7 @@ public class CommentController {
                         @ApiResponse(responseCode = "500", description = "Lỗi máy chủ nội bộ")
         })
         public ResponseEntity<List<Comment>> getCommentsByArticle(
-                        @Parameter(description = "ID của bài viết") @PathVariable Long articleId) {
+                        @Parameter(description = "ID của bài viết") @PathVariable Integer articleId) {
                 List<Comment> comments = commentService.getCommentsByArticle(articleId);
                 return ResponseEntity.ok(comments);
         }
@@ -85,7 +85,7 @@ public class CommentController {
                         @ApiResponse(responseCode = "500", description = "Lỗi máy chủ nội bộ")
         })
         public ResponseEntity<Void> deleteComment(
-                        @Parameter(description = "ID của bình luận cần xóa") @PathVariable Long commentId,
+                        @Parameter(description = "ID của bình luận cần xóa") @PathVariable Integer commentId,
                         @Parameter(description = "Token JWT theo định dạng 'Bearer <token>'") @RequestHeader("Authorization") String token) {
                 String googleId = jwtService.getGoogleIdFromToken(token.replace("Bearer ", ""));
                 commentService.deleteComment(commentId, googleId);
@@ -105,7 +105,7 @@ public class CommentController {
                         @ApiResponse(responseCode = "500", description = "Lỗi máy chủ nội bộ")
         })
         public ResponseEntity<Comment> editComment(
-                        @Parameter(description = "ID của bình luận cần sửa") @PathVariable Long commentId,
+                        @Parameter(description = "ID của bình luận cần sửa") @PathVariable Integer commentId,
                         @Parameter(description = "Nội dung bình luận mới") @RequestParam String content,
                         @Parameter(description = "Token JWT theo định dạng 'Bearer <token>'") @RequestHeader("Authorization") String token) {
                 String googleId = jwtService.getGoogleIdFromToken(token.replace("Bearer ", ""));

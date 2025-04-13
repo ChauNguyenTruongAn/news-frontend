@@ -14,14 +14,16 @@ import com.example.newswebsite.domain.Comment;
 import com.example.newswebsite.domain.User;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByArticleArticleIdAndParentCommentIsNull(Long articleId);
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+    @Query("SELECT c FROM Comment c WHERE c.article.articleId = :articleId AND c.parent IS NULL")
+    List<Comment> findByArticleArticleIdAndParentIsNull(@Param("articleId") Integer articleId);
 
     Page<Comment> findByArticle(Article article, Pageable pageable);
 
-    Page<Comment> findByParentComment(Comment parentComment, Pageable pageable);
-
     Page<Comment> findByAuthor(User author, Pageable pageable);
+
+    @Query("SELECT c FROM Comment c WHERE c.parent.commentId = :parentId")
+    List<Comment> findByParentId(@Param("parentId") Integer parentId);
 
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.article.articleId = :articleId")
     long countByArticleArticleId(@Param("articleId") Integer articleId);

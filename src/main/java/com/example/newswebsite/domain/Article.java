@@ -68,9 +68,12 @@ public class Article {
     private ArticleStatus status = ArticleStatus.PENDING;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    // @JsonManagedReference
     @JsonIgnore
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ReadingHistory> readingHistories;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Article_Tags", joinColumns = @JoinColumn(name = "article_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))

@@ -1,0 +1,1 @@
+ALTER TABLE Articles ADD FULLTEXT INDEX ft_search (title, summary, content); 

@@ -22,7 +22,7 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final UserRepository userService;
 
-    public Comment addComment(Integer articleId, String content, Long parentCommentId, String googleId) {
+    public Comment addComment(Integer articleId, String content, Integer parentCommentId, String googleId) {
         User author = userService.findByGoogleId(googleId);
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new RuntimeException("Article not found"));
@@ -37,7 +37,7 @@ public class CommentService {
         if (parentCommentId != null) {
             Comment parent = commentRepository.findById(parentCommentId)
                     .orElseThrow(() -> new RuntimeException("Parent comment not found"));
-            comment.setParentComment(parent);
+            comment.setParent(parent);
             if (parent.getReplies() == null) {
                 parent.setReplies(new ArrayList<>());
             }
@@ -46,11 +46,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getCommentsByArticle(Long articleId) {
-        return commentRepository.findByArticleArticleIdAndParentCommentIsNull(articleId);
+    public List<Comment> getCommentsByArticle(Integer articleId) {
+        return commentRepository.findByArticleArticleIdAndParentIsNull(articleId);
     }
 
-    public void deleteComment(Long commentId, String googleId) {
+    public void deleteComment(Integer commentId, String googleId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         User user = userService.findByGoogleId(googleId);
@@ -62,12 +62,11 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public Comment editComment(Long commentId, String newContent, String googleId) {
+    public Comment editComment(Integer commentId, String newContent, String googleId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         User user = userService.findByGoogleId(googleId);
 
-        // Chỉ cho phép tác giả hoặc admin sửa
         if (!comment.getAuthor().getGoogleId().equals(googleId) && !user.getRole().getRoleName().equals("admin")) {
             throw new RuntimeException("Unauthorized: Only the comment author or admin can edit this comment");
         }
