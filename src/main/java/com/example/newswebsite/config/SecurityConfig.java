@@ -28,8 +28,8 @@ public class SecurityConfig {
                 http.cors(cors -> cors.configurationSource(request -> {
                         CorsConfiguration config = new CorsConfiguration();
                         config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://127.0.0.1:5500",
-                                        "https://stunews.static.domains"));
-                        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+                                        "https://stunews.static.domains", "https://news-bee-theta.vercel.app/", "https://news-bee-theta.vercel.app"));
+                        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                         config.setAllowedHeaders(Arrays.asList("*"));
                         config.setAllowCredentials(true);
                         return config;
@@ -46,6 +46,8 @@ public class SecurityConfig {
                                                                 "/swagger-ui.html")
                                                 .permitAll()
                                                 .requestMatchers("/upload-image", "/export-html").permitAll()
+                                                .requestMatchers("/api/search/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
 
                                                 // Public article endpoints
                                                 .requestMatchers(HttpMethod.GET, "/api/articles/home",
